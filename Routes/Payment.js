@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const stripe = require('stripe')('sk_test_51Q53EfFMGhaCRLSy7jTQHxgPGEVtCia7JegU08Ftw1l9X6SOZwi1d2uqkmZkUBn9wID9pQEYIFCoqhi9tDpN3pkJ00pUafhDm6');  // Replace with your Secret Key
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);  // Replace with your Secret Key
 const nodemailer = require('nodemailer');
 
 // Payment intent creation
