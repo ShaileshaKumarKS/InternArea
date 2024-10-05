@@ -48,7 +48,7 @@ router.post('/', async (req, res) => {
         //   Thank you..`,
         // };
 
-        await transporter.sendMail(mailOptions);
+        // await transporter.sendMail(mailOptions);
 
         res.status(200).json(subscription); // Send back the subscription data
     } catch (error) {
