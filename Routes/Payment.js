@@ -12,9 +12,9 @@ router.post('/', async (req, res) => {
             payment_method: paymentMethodId,
            
             invoice_settings: {
-                default_payment_method: paymentMethodId,
+               email:['invoice.finalized','invoice.payment_succeeded'],
             },
-            email,
+          
         });
 
         // Create the subscription
