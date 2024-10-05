@@ -10,11 +10,7 @@ router.post('/', async (req, res) => {
         // Create a customer
         const customer = await stripe.customers.create({
             payment_method: paymentMethodId,
-           
-            invoice_settings: {
-               email:['invoice.finalized','invoice.payment_succeeded'],
-            },
-          
+            email:email,
         });
 
         // Create the subscription
@@ -24,6 +20,9 @@ router.post('/', async (req, res) => {
                 { price: plan }, // Price ID passed from frontend
             ],
             expand: ['latest_invoice.payment_intent'],
+            invoice_settings:{
+              default_payment_method:paymentMethodId,
+            },
         });
 
         const invoiceId = subscription.latest_invoice;
