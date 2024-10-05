@@ -1,57 +1,32 @@
 const express = require('express');
 const router = express.Router();
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);  // Replace with your Secret Key
-const nodemailer = require('nodemailer');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); // Use your Stripe secret key
 
-// Payment intent creation
-router.post('/create-payment-intent', async (req, res) => {
-  const { payment_method, plan } = req.body;
+// Endpoint to create a subscription
+router.post('/', async (req, res) => {
+    const { paymentMethodId, plan } = req.body;
 
-  const price = plan.price * 100;  // Convert to smallest currency unit
+    try {
+        // Assuming you have a user object that contains the customer ID
+        const customerId = req.user.stripeCustomerId; // Retrieve from your user session or database
 
-  try {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: price,
-      currency: 'inr',
-      payment_method: payment_method,
-      confirm: true,
-    });
+        if (!customerId) {
+            return res.status(400).json({ error: 'Customer ID is required' });
+        }
 
-    res.send({
-      client_secret: paymentIntent.client_secret
-    });
-  } catch (error) {
-    res.status(400).send({
-      error: error.message,
-    });
-  }
+        // Create the subscription with Stripe
+        const subscription = await stripe.subscriptions.create({
+            customer: customerId, // Use the customer ID
+            items: [{ price: plan }], // Price ID corresponding to the selected plan
+            default_payment_method: paymentMethodId,
+        });
+
+        res.status(200).json(subscription);
+    } catch (error) {
+        console.error(error); // Log error for debugging
+        res.status(400).json({ error: error.message });
+    }
 });
 
-// Send invoice email after payment
-router.post('/send-email', async (req, res) => {
-  const { plan, paymentIntent, userEmail } = req.body;
-
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'your-email@gmail.com',  // Replace with your email
-      pass: 'your-email-password',   // Replace with your email password
-    },
-  });
-
-  const mailOptions = {
-    from: 'shailesh4ks@gmail.com',
-    to: userEmail,
-    subject: `Subscription Confirmation: ${plan.name} Plan`,
-    text: `You have successfully subscribed to the ${plan.name} Plan. Amount: ₹${plan.price}/month.`,
-  };
-
-  try {
-    await transporter.sendMail(mailOptions);
-    res.send('Email sent');
-  } catch (error) {
-    res.status(500).send({ error: 'Email sending failed' });
-  }
-});
-
+// Export the router
 module.exports = router;
