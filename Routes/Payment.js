@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
             items: [
                 { price: plan }, // Price ID passed from frontend
             ],
-            expand: ['latest_invoice.payment_intent','latest_invoice','items.price.product'],
+            expand: ['latest_invoice.payment_intent','latest_invoice'],
           
         });
 
