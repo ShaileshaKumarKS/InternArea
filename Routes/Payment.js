@@ -10,6 +10,9 @@ router.post('/', async (req, res) => {
         // Create a customer
         const customer = await stripe.customers.create({
             payment_method: paymentMethodId,
+            invoice_settings:{
+              default_payment_method:paymentMethodId,
+            },
             email:email,
         });
 
