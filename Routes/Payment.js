@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
           
         });
 
-        const invoiceId = subscription.latest_invoice;
+        const invoiceId = subscription.latest_invoice.id;
         
         const invoice=await stripe.invoices.retrieve(invoiceId);
 
