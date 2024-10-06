@@ -22,17 +22,23 @@ router.post('/', async (req, res) => {
             items: [
                 { price: plan }, // Price ID passed from frontend
             ],
-            expand: ['latest_invoice.payment_intent'],
+            expand: ['latest_invoice.payment_intent','latest_invoice','items.price.product'],
           
         });
 
-        const priceId=subscription.items.data[0].price.id;
-        const price=await stripe.prices.retrieve(priceId);
-        const product=await stripe.products.retrieve(price.product);
+        // const priceId=subscription.items.data[0].price.id;
+        // const price=await stripe.prices.retrieve(priceId);
+        // const product=await stripe.products.retrieve(price.product);
 
-        // const invoiceId = subscription.latest_invoice.id;
+         const invoiceId = subscription.latest_invoice.id;
         
-        // const invoice=await stripe.invoices.retrieve(invoiceId);
+         const invoice=await stripe.invoices.retrieve(invoiceId);
+         const priceId=subscription.items.data[0].price.id;
+         const priceObject=await stripe.prices.retrieve(priceId);
+
+         const productId=priceObject.product;
+         const product=await stripe.products.retrieve(productId);
+         
 
         const transporter=nodemailer.createTransport({
           service:'gmail',
@@ -49,8 +55,8 @@ router.post('/', async (req, res) => {
           subject:'Subscription Confirmation and Invoice',
           text:`Thank you for subscribing to our plan.Here are your details:\n\n
           Plan:${product.name}\n
-          Amount Paid:${subscription.latest_invoice.total/100} ${subscription.latest_invoice.currency.toUpperCase()}\n
-          Invoice URL:${subscription.latest_invoice.hosted_inovice_url}\n\n
+          Amount Paid:${invoice.total/100} ${invoice.currency.toUpperCase()}\n
+          Invoice URL:${invoice.hosted_inovice_url}\n\n
           Thank you..`,
         };
 
