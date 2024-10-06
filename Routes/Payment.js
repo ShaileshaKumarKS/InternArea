@@ -20,9 +20,7 @@ router.post('/', async (req, res) => {
                 { price: plan }, // Price ID passed from frontend
             ],
             expand: ['latest_invoice.payment_intent'],
-            invoice_settings:{
-              default_payment_method:paymentMethodId,
-            },
+          
         });
 
         const invoiceId = subscription.latest_invoice;
