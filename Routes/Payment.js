@@ -26,9 +26,13 @@ router.post('/', async (req, res) => {
           
         });
 
-        const invoiceId = subscription.latest_invoice.id;
+        const priceId=subscription.items.data[0].price.id;
+        const price=await stripe.prices.retrieve(priceId);
+        const product=await stripe.products.retrieve(price.product);
+
+        // const invoiceId = subscription.latest_invoice.id;
         
-        const invoice=await stripe.invoices.retrieve(invoiceId);
+        // const invoice=await stripe.invoices.retrieve(invoiceId);
 
         const transporter=nodemailer.createTransport({
           service:'gmail',
@@ -44,9 +48,9 @@ router.post('/', async (req, res) => {
           to:email,
           subject:'Subscription Confirmation and Invoice',
           text:`Thank you for subscribing to our plan.Here are your details:\n\n
-          Plan:${plan}\n
-          Amount Paid:${invoice.total/100} ${invoice.currency.toUpperCase()}\n
-          Invoice URL:${invoice.hosted_inovice_url}\n\n
+          Plan:${product.name}\n
+          Amount Paid:${subscription.latest_invoice.total/100} ${subscription.latest_invoice.currency.toUpperCase()}\n
+          Invoice URL:${subscription.latest_invoice.hosted_inovice_url}\n\n
           Thank you..`,
         };
 
