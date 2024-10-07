@@ -32,14 +32,15 @@ router.post('/', async (req, res) => {
 
          const invoiceId = subscription.latest_invoice.id;
         
-         const invoice=await stripe.invoices.retrieve(invoiceId);
-         const priceId=subscription.items.data[0].price.id;
-         const priceObject=await stripe.prices.retrieve(priceId);
+          const invoice=await stripe.invoices.retrieve(invoiceId);
 
-         const productId=priceObject.product;
-         const product=await stripe.products.retrieve(productId);
-         
+        // const priceId=subscription.items.data[0].price.id;
+         const priceObject=await stripe.prices.retrieve(plan);
 
+        // const productId=priceObject.product;
+         const product=await stripe.products.retrieve(priceObject.product);
+
+       
         const transporter=nodemailer.createTransport({
           service:'gmail',
           auth:{
@@ -56,7 +57,7 @@ router.post('/', async (req, res) => {
           text:`Thank you for subscribing to our plan.Here are your details:\n\n
           Plan:${product.name}\n
           Amount Paid:${invoice.total/100} ${invoice.currency.toUpperCase()}\n
-          Invoice URL:${invoice.hosted_inovice_url}\n\n
+          Invoice URL:${invoice.hosted_invoice_url}\n\n
           Thank you..`,
         };
 
