@@ -56,7 +56,7 @@ router.post('/', async (req, res) => {
           subject:'Subscription Confirmation and Invoice',
           text:`Thank you for subscribing to our plan.Here are your details:\n\n
           Plan:${product.name}\n
-                ${product.description}\n
+          Description:  ${product.description}\n
           Amount Paid:${invoice.total/100} ${invoice.currency.toUpperCase()}\n
           Invoice URL:${invoice.hosted_invoice_url}\n\n
           Thank you..`,
