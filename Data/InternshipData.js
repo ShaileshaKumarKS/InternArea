@@ -5,7 +5,7 @@ let InterShipData = [
         location: "India,Mumbai",
         Duration: "6 months",
         category: "Big Brands",
-        aboutCompany: ` 
+        aboutCompany: ` "Instagram Page
 We are India's 1st online luxury content platform where we showcase everything luxurious and unique on various platforms like YouTube, Instagram, etc. We do marketing and professional shoots for various industries like real estate, travel, food, lifestyle, bikes, cars, fashion, events & much more.",`,
         aboutInternship: `Selected intern's day-to-day responsibilities include:
 
